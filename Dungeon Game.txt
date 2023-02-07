@@ -1,0 +1,185 @@
+#!/bin/bash
+
+function Lizard() {
+  Whp=$(( Whp - 3 ))
+}
+
+function boss() {
+  Whp=$(( Whp - 5 ))
+}
+
+function savedlevel(){
+level=$((level + 1 ))
+echo -e "level=$level" > variable
+}
+function savedhp(){
+echo -e "Whp=$Whp" > savedhp
+}
+function savedhp2(){
+echo e-"Whp=$Whpp" > savedhp
+}
+
+function resethp(){
+Whp=100
+echo -e "Whp=$Whp" > savedhp
+}
+function resetlevel(){
+level=1
+echo -e "level=$level" > variable
+}
+source variable
+echo "Enter your warrior name: "
+read warriorName
+echo "Hello $warriorName"
+Lizardhp=25
+Doghp=50
+Bosshp=100
+lightingRod=1
+HealingPotion=1
+if [[ $level -eq 1 ]]; then
+savedhp
+echo "Welcome to the first floor"
+echo "Press 1 to attack"
+
+  while [[ $Lizardhp -gt 0 ]]; do
+    read x
+    if [[ $x -eq 1 ]]; then
+      echo "you have Attacked !!"
+      Lizardhp=$(( Lizardhp - 5 ))
+      echo "you have done 5 damage to the lizard"
+      if [[ $Lizardhp -eq 0 ]]; then
+        echo
+        break
+      fi
+      echo "the Lizard Hp is $Lizardhp"
+      echo "the lizard Attacked you "
+      Lizard
+      echo " you have taken 3 damage"
+      echo "your Hp is $Whp"
+    else
+      echo "Please press 1 to attack"
+    fi
+  done
+
+  if [[ $Lizardhp -eq 0 ]]; then
+    echo "You have Defeated the lizard"
+    echo "you have found Bronze Box"
+    echo "Congratulation You have Acquired a healing Potion"
+    echo "Healing Potions can use When your Hp is Less than 50"
+    for index in {1..10}; do
+      echo
+    done
+    echo "Going to the Second Floor"
+    savedlevel
+    savedhp
+  fi
+
+  for index in {1..10..5}; do
+    echo
+  done
+fi
+
+if [[ $level -eq 2 ]]; then
+	savedhp
+  echo "You are in the second floor"
+  echo "Press 1 to attack the Dog"
+  while [[ $Doghp -ne 0 && $Whp -ne 0 ]]; do
+    read x
+    if [[ $x -eq 1 ]]; then
+      echo "you have Attacked !!"
+      Doghp=$(( Doghp - 5 ))
+      echo "you have done 5 damage to the Dog"
+      if [[ $Doghp -eq 0 ]]; then
+        break
+      fi
+      echo "the Dog Hp is $Doghp"
+      echo "the Dog Attacked you "
+      Lizard
+      echo " you have taken 3 damage"
+      echo "your Hp is $Whp"
+    else
+      echo "please Press 1 to attack"
+    fi
+  done
+
+  if [[ $Doghp -eq 0 ]]; then
+    echo "You have Defeated the Dog"
+    echo
+    echo "you have found Silver Box"
+    echo "Congratulation You have Acquired a Lighting Rod"
+    echo "Going to the Third Floor"
+    savedlevel
+    for index in {1..10}; do
+      echo
+    done
+  fi
+fi
+
+
+
+if [ $level -eq 3 ]; then
+savedhp
+  echo "You are in the Third floor"
+  echo "Press 1 to attack the Boss"
+
+  while [ $Bosshp -ne 0 ] && [ $Whp -gt 0 ]; do
+    if [ $Whp -lt 50 ] && [ $HealingPotion -ne 0 ]; then
+      echo "Warning Your Hp is less Than 50"
+      echo "Press 2 to Use healing Potion"
+    fi
+    if [ $lightingRod -ne 0 ] && [ $Whp -lt 25 ]; then
+      echo "You Can Use the LightingRod"
+      echo "Press 3 to Use the LightingRod"
+    fi
+    read -r x
+    if [ $x -eq 3 ] && [ $lightingRod -ne 0 ]; then
+      echo "You have Used The LightingRod"
+      echo "You have Done 25 Damage to the Boss"
+      lightingRod=0
+      Bosshp=$((Bosshp-25))
+      if [ $Bosshp -lt 0 ] || [ $Bosshp -eq 0 ]; then
+        break
+      fi
+      echo "Boss HP is  $Bosshp"
+    fi
+    if [ $x -eq 2 ] && [ $HealingPotion -ne 0 ]; then
+      echo "Healing potion have been used"
+      Whp=$((Whp+20))
+      echo "Your Hp is  $Whp"
+      HealingPotion=0
+    fi
+    if [ $x -eq 1 ]; then
+      echo "you have Attacked !!"
+      Bosshp=$((Bosshp-5))
+      echo "you have done 5 damage to the Boss"
+      if [ $Bosshp -lt 0 ] || [ $Bosshp -eq 0 ]; then
+        break
+      fi
+      echo "the Doss Hp is $Bosshp"
+      echo "the Boss Attacked you "
+      Whp=$((Whp-5))
+      echo " you have taken 5 damage"
+      if [ $Whp -lt 0 ]; then
+        echo "you have Died"
+        break
+      fi
+      echo "your Hp is $Whp"
+    else
+      echo "please Press 1 to attack"
+    fi
+  done
+fi
+if [ $Whp -lt 0 ]; then
+  for ((index=0;index<3;index++)); do
+    echo
+  done
+  arr1=("You have lost ")
+	echo ${arr1[@]}
+else
+  if [ $Whp -gt 0 ] || [ $Bosshp -lt 0 ]; then
+    arr=("You have Won The Game")
+	echo ${arr[@]}
+  fi
+fi
+resetlevel
+resethp
